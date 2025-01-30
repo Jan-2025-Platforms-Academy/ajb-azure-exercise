@@ -15,4 +15,11 @@ pool:
 steps:
 - task: TerraformInstaller@2
   inputs:
-    terraformVersion: '1.10.4'
+    terraformVersion: '1.10.5'
+- task: TerraformCLI@2
+  inputs:
+    command: 'init'
+    backendType: 'azurerm'
+    backendServiceArm: 'Jan2025PlatformsAcademy'
+    backendAzureRmKey: 'ajb-azure-exercise/dev/terraform.tfstate'
+    allowTelemetryCollection: true
