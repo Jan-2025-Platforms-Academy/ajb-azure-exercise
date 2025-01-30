@@ -20,3 +20,10 @@ steps:
 - task: TerraformInstaller@2
   inputs:
     terraformVersion: '1.10.4'
+- task: TerraformCLI@2
+  inputs:
+    command: 'init'
+    backendType: 'azurerm'
+    backendServiceArm: 'MSDN Sub'
+    backendAzureRmKey: 'ajb-azure-exercise/dev/terraform.tfstate'
+    allowTelemetryCollection: true
