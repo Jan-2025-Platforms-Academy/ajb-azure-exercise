@@ -24,6 +24,6 @@ steps:
   inputs:
     command: 'init'
     backendType: 'azurerm'
-    backendServiceArm: 'MSDN Sub'
+    backendServiceArm: 'Jan2025PlatformsAcademy'
     backendAzureRmKey: 'ajb-azure-exercise/dev/terraform.tfstate'
     allowTelemetryCollection: true
