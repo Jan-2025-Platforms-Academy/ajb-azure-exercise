@@ -59,9 +59,9 @@ jobs:
     inputs:
       buildType: 'current'
       targetPath: ${{ parameters.workingDirectory }}
-  - download: current
-    artifact: terraform-plan
-    displayName: Download Terraform plan
+  - script: |
+      ls -la
+    workingDirectory: ${{ parameters.workingDirectory }}
   - task: TerraformCLI@2
     displayName: Terraform apply
     inputs:
