@@ -39,6 +39,7 @@ jobs:
 - job: Approval
   dependsOn:
   - Plan
+  pool: server
   timeoutInMinutes: 1440
   steps:
   - task: ManualValidation@1
