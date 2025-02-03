@@ -55,6 +55,10 @@ jobs:
   - task: TerraformInstaller@2
     inputs:
       terraformVersion: '1.10.5'
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      targetPath: ${{ parameters.workingDirectory }}
   - download: current
     artifact: terraform-plan
     displayName: Download Terraform plan
