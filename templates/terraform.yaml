@@ -3,7 +3,6 @@ parameters:
   type: string
 - name: workingDirectory
   type: string
-- name: serviceConnection
 
 jobs:
 - job: Plan
