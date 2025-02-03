@@ -1,0 +1,67 @@
+parameters:
+- name: environment
+  type: string
+- name: workingDirectory
+  type: string
+- name: serviceConnection
+
+jobs:
+- job: Plan
+  steps:
+  - task: TerraformInstaller@2
+    inputs:
+      terraformVersion: '1.10.5'
+  - task: TerraformCLI@2
+    displayName: Terraform initialize
+    inputs:
+      command: init
+      workingDirectory: ${{ parameters.workingDirectory }}
+      commandOptions: "-upgrade -reconfigure"
+      backendType: azurerm
+      backendServiceArm: 'Jan2025PlatformsAcademy'
+      backendAzureRmKey: 'ajb-azure-exercise/${{ parameters.environment }}/terraform.tfstate'
+  - task: TerraformCLI@2
+    displayName: Terraform validate
+    inputs:
+      command: validate
+      workingDirectory: ${{ parameters.workingDirectory }}
+  - task: TerraformCLI@2
+    displayName: Terraform plan
+    inputs:
+      command: plan
+      allowTelemetryCollection: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+      environmentServiceName: 'Jan2025PlatformsAcademy'
+      publishPlanResults: $(System.StageDisplayName)
+      commandOptions: "-var-file ${{ parameters.environment }}.tfvars -compact-warnings -out=$(System.StageName).tfplan"
+  - publish: $(System.DefaultWorkingDirectory)
+    artifact: terraform-plan
+
+- job: Approval
+  dependsOn:
+  - Plan
+  timeoutInMinutes: 1440
+  steps:
+  - task: ManualValidation@1
+    timeoutInMinutes: 1440
+    inputs:
+      onTimeout: 'reject'
+
+- job: Apply
+  dependsOn:
+  - Approval
+  steps:
+  - checkout: none
+  - task: TerraformInstaller@2
+    inputs:
+      terraformVersion: '1.10.5'
+  - download: current
+    artifact: terraform-plan
+    displayName: Download Terraform plan
+  - task: TerraformCLI@2
+    displayName: Terraform apply
+    inputs:
+      command: apply
+      workingDirectory: ${{ parameters.workingDirectory }}
+      environmentServiceName: 'Jan2025PlatformsAcademy'
+      commandOptions: "-auto-approve $(System.StageName).tfplan"
