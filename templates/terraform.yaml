@@ -71,4 +71,4 @@ jobs:
       command: apply
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: 'Jan2025PlatformsAcademy'
-      commandOptions: "-auto-approve /terraform-plan$(System.StageName).tfplan"
+      commandOptions: "-auto-approve terraform-plan/$(System.StageName).tfplan"
