@@ -15,7 +15,6 @@ jobs:
     inputs:
       command: init
       workingDirectory: ${{ parameters.workingDirectory }}
-      commandOptions: "-upgrade -reconfigure"
       backendType: azurerm
       backendServiceArm: 'Jan2025PlatformsAcademy'
       backendAzureRmKey: 'ajb-azure-exercise/${{ parameters.environment }}/terraform.tfstate'
@@ -33,7 +32,7 @@ jobs:
       environmentServiceName: 'Jan2025PlatformsAcademy'
       publishPlanResults: $(System.StageDisplayName)
       commandOptions: "-var-file ${{ parameters.environment }}.tfvars -compact-warnings -out=$(System.StageName).tfplan"
-  - publish: $(System.DefaultWorkingDirectory)
+  - publish: ${{ parameters.workingDirectory }}/$(System.StageName).tfplan
     artifact: terraform-plan
 
 - job: Approval
@@ -51,7 +50,6 @@ jobs:
   dependsOn:
   - Approval
   steps:
-  - checkout: none
   - task: TerraformInstaller@2
     inputs:
       terraformVersion: '1.10.5'
@@ -59,13 +57,18 @@ jobs:
     inputs:
       buildType: 'current'
       targetPath: ${{ parameters.workingDirectory }}
-  - script: |
-      ls -la
-    workingDirectory: ${{ parameters.workingDirectory }}/terraform-plan
+  - task: TerraformCLI@2
+    displayName: Terraform initialize
+    inputs:
+      command: init
+      workingDirectory: ${{ parameters.workingDirectory }}
+      backendType: azurerm
+      backendServiceArm: 'Jan2025PlatformsAcademy'
+      backendAzureRmKey: 'ajb-azure-exercise/${{ parameters.environment }}/terraform.tfstate'
   - task: TerraformCLI@2
     displayName: Terraform apply
     inputs:
       command: apply
-      workingDirectory: ${{ parameters.workingDirectory }}/terraform-plan
+      workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: 'Jan2025PlatformsAcademy'
-      commandOptions: "-auto-approve $(System.StageName).tfplan"
+      commandOptions: "-auto-approve /terraform-plan$(System.StageName).tfplan"
