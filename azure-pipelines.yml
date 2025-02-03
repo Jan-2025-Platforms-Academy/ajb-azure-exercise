@@ -13,12 +13,12 @@ stages:
     - template: templates/terraform.yaml
       parameters:
         environment: dev
-        workingDirectory: $(Pipeline.Workspace)
+        workingDirectory: $(System.DefaultWorkingDirectory)
   - stage: Prod
     dependsOn: Dev
     jobs:
     - template: templates/terraform.yaml
       parameters:
         environment: prod
-        workingDirectory: $(Pipeline.Workspace)
+        workingDirectory: $(System.DefaultWorkingDirectory)
     
