@@ -61,11 +61,11 @@ jobs:
       targetPath: ${{ parameters.workingDirectory }}
   - script: |
       ls -la
-    workingDirectory: ${{ parameters.workingDirectory }}
+    workingDirectory: ${{ parameters.workingDirectory }}/terraform-plan
   - task: TerraformCLI@2
     displayName: Terraform apply
     inputs:
       command: apply
-      workingDirectory: ${{ parameters.workingDirectory }}
+      workingDirectory: ${{ parameters.workingDirectory }}/terraform-plan
       environmentServiceName: 'Jan2025PlatformsAcademy'
       commandOptions: "-auto-approve $(System.StageName).tfplan"
